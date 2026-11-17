@@ -77,7 +77,7 @@ src/
   session/        relie le réseau à l'app (héberger / rejoindre / quitter)
   shared/         types et protocole, découpage des messages, codes de salle
   storage/        profil, packs perso, favoris (fichiers locaux)
-  data/           pack intégré (templates dessinés avec des emojis)
+  data/           textes de l'accueil (phrases et phrases surprises)
 scripts/
   simulate.ts     test de bout en bout d'une partie
 ```
@@ -86,5 +86,5 @@ scripts/
 
 - L'hôte doit garder l'app ouverte au premier plan (iOS coupe les connexions en arrière-plan). L'écran reste allumé pendant la partie.
 - Les packs sont lus au moment de créer la partie : si tu modifies un pack, recrée la salle.
-- Le pack intégré est volontairement simple (emojis) : rien n'est sous droits d'auteur. Ajoute tes vraies images de memes via « Mes packs ».
+- L'app n'embarque aucun meme : au premier lancement, importe les memes populaires (memegen.link) ou crée un pack avec tes images dans « Mes packs ».
 - Idées : partager un pack avec un pote (export/import), placer librement les zones de texte, découverte automatique des parties sur le réseau, avatars.

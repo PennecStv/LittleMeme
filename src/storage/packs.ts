@@ -1,7 +1,6 @@
 import { File, Paths } from 'expo-file-system';
 import { SaveFormat, ImageManipulator } from 'expo-image-manipulator';
 import { Image } from 'react-native';
-import { BUILTIN_PACK } from '../data/builtinPack';
 import { MEMEGEN_TEMPLATES_URL, memegenConfigUrl, MemegenTemplate, parseMemegenZones } from '../shared/memegen';
 import { MemePack, MemeTemplate, TextZone } from '../shared/types';
 import { createSignal, ensureDir, randomId, readJson, writeJson } from './files';
@@ -27,7 +26,7 @@ export function getUserPacks(): MemePack[] {
 }
 
 export function getAllPacks(): MemePack[] {
-  return [BUILTIN_PACK, ...getUserPacks()];
+  return getUserPacks();
 }
 
 export function getPack(id: string): MemePack | undefined {

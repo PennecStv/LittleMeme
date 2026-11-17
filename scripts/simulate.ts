@@ -9,7 +9,6 @@ import { NetModule } from '../src/net/netTypes';
 import { TcpClientTransport } from '../src/net/transport';
 import { ipToRoomCode, roomCodeToIp } from '../src/shared/roomCode';
 import { GameView, MemePack, Phase } from '../src/shared/types';
-import { BUILTIN_PACK } from '../src/data/builtinPack';
 import { parseMemegenZones } from '../src/shared/memegen';
 
 const nodeNet: NetModule = {
@@ -70,7 +69,21 @@ example:
   assert.deepEqual(parseMemegenZones('', 2).map((z) => z.y), [0, 0.8]);
   console.log('✓ zones memegen');
 
-  // --- pack avec image + pack intégré
+  // --- packs de test (5 templates pour que chaque joueur ait un meme différent, + un avec une grosse image)
+  const testPack: MemePack = {
+    id: 'test',
+    name: 'Pack de test',
+    templates: ['a', 'b', 'c', 'd', 'e'].map((id) => ({
+      id,
+      name: `Meme ${id}`,
+      aspect: 1,
+      hasImage: true,
+      zones: [
+        { x: 0, y: 0, w: 1, h: 0.2 },
+        { x: 0, y: 0.8, w: 1, h: 0.2 },
+      ],
+    })),
+  };
   const photoPack: MemePack = {
     id: 'perso',
     name: 'Pack perso',
@@ -81,7 +94,7 @@ example:
   const host = new HostServer(
     nodeNet,
     {
-      packs: [BUILTIN_PACK, photoPack],
+      packs: [testPack, photoPack],
       getAsset: async (id) => (id === 'perso-1' ? bigImage : null),
     },
     PORT,

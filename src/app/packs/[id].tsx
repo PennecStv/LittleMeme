@@ -42,7 +42,6 @@ export default function PackDetail() {
     );
   }
 
-  const editable = !pack.builtin;
   const thumb = Math.floor((width - space.md * 2 - space.sm) / 2);
   const previewWidth = Math.min(width - space.md * 4, 420);
 
@@ -161,24 +160,16 @@ export default function PackDetail() {
   return (
     <Screen scroll>
       <Button small variant="ghost" title="Retour" onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
-      {editable ? (
-        <TextInput
-          defaultValue={pack.name}
-          onEndEditing={(e) => renamePack(pack.id, e.nativeEvent.text)}
-          style={styles.titleInput}
-          maxLength={40}
-        />
-      ) : (
-        <Title>{pack.name}</Title>
-      )}
-      {editable ? (
-        <View style={{ flexDirection: 'row', gap: space.sm }}>
-          <Button title="Ajouter une image" onPress={() => pickImage(false)} style={{ flex: 1 }} />
-          <Button title="Ajouter un GIF" variant="secondary" onPress={() => pickImage(true)} style={{ flex: 1 }} />
-        </View>
-      ) : (
-        <Body muted>Pack intégré à l'app (lecture seule). Crée ton propre pack pour ajouter tes images.</Body>
-      )}
+      <TextInput
+        defaultValue={pack.name}
+        onEndEditing={(e) => renamePack(pack.id, e.nativeEvent.text)}
+        style={styles.titleInput}
+        maxLength={40}
+      />
+      <View style={{ flexDirection: 'row', gap: space.sm }}>
+        <Button title="Ajouter une image" onPress={() => pickImage(false)} style={{ flex: 1 }} />
+        <Button title="Ajouter un GIF" variant="secondary" onPress={() => pickImage(true)} style={{ flex: 1 }} />
+      </View>
 
       {pack.templates.length === 0 && (
         <Card style={{ alignItems: 'center' }}>
@@ -206,7 +197,6 @@ export default function PackDetail() {
         {templates.map((t) => (
           <Pressable
             key={t.id}
-            disabled={!editable}
             onPress={() => setDraft({ mode: 'edit', template: t, name: t.name, zones: t.zones })}
             style={styles.thumb}
           >
@@ -218,7 +208,7 @@ export default function PackDetail() {
         ))}
       </View>
 
-      {editable && <Button title="Supprimer le pack" variant="danger" onPress={confirmDeletePack} />}
+      <Button title="Supprimer le pack" variant="danger" onPress={confirmDeletePack} />
     </Screen>
   );
 }

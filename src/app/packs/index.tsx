@@ -90,7 +90,6 @@ Vérifie ta connexion Internet.`,
             </Text>
             <Text style={styles.packMeta}>
               {p.templates.length} meme{p.templates.length > 1 ? 's' : ''}
-              {p.builtin ? ' · intégré' : ''}
             </Text>
           </View>
           <Text style={styles.chevron}>›</Text>

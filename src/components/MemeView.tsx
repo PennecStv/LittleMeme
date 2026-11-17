@@ -4,7 +4,7 @@ import { GameClient } from '../net/GameClient';
 import { MemeTemplate, TextZone } from '../shared/types';
 import { fonts } from './theme';
 
-// Rendu d'un meme : fond, panneaux, emojis ou image, puis le texte dans chaque zone.
+// Rendu d'un meme : l'image, puis le texte dans chaque zone.
 // Tout est proportionnel à la largeur, donc le même meme s'affiche pareil sur tous les écrans.
 
 type Props = {
@@ -23,40 +23,7 @@ type Props = {
 export function MemeView({ template, captions, width, imageUri, placeholders, highlightZone, ref }: Props) {
   const height = width / template.aspect;
   return (
-    <View ref={ref} collapsable={false} style={{ width, height, backgroundColor: template.bg ?? '#000', overflow: 'hidden' }}>
-      {template.panels?.map((p, i) => (
-        <View
-          key={i}
-          style={{
-            position: 'absolute',
-            left: p.x * width,
-            top: p.y * height,
-            width: p.w * width,
-            height: p.h * height,
-            backgroundColor: p.color,
-          }}
-        />
-      ))}
-      {template.emojis?.map((e, i) => {
-        const size = e.size * width;
-        return (
-          <Text
-            key={i}
-            allowFontScaling={false}
-            style={{
-              position: 'absolute',
-              left: e.x * width - size * 0.75,
-              top: e.y * height - size * 0.68,
-              width: size * 1.5,
-              fontSize: size,
-              lineHeight: size * 1.36,
-              textAlign: 'center',
-            }}
-          >
-            {e.e}
-          </Text>
-        );
-      })}
+    <View ref={ref} collapsable={false} style={{ width, height, backgroundColor: '#000', overflow: 'hidden' }}>
       {template.hasImage &&
         (imageUri ? (
           <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />

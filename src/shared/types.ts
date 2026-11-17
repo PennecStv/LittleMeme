@@ -10,10 +10,6 @@ export type TextZone = {
   style?: 'outline' | 'plain';
 };
 
-/** Élément décoratif des templates intégrés (pas besoin d'image). */
-export type EmojiItem = { e: string; x: number; y: number; size: number };
-export type Panel = { x: number; y: number; w: number; h: number; color: string };
-
 export type MemeTemplate = {
   id: string;
   name: string;
@@ -24,15 +20,11 @@ export type MemeTemplate = {
   hasImage: boolean;
   /** Image animée (GIF), envoyée telle quelle. */
   gif?: boolean;
-  bg?: string;
-  panels?: Panel[];
-  emojis?: EmojiItem[];
 };
 
 export type MemePack = {
   id: string;
   name: string;
-  builtin?: boolean;
   templates: MemeTemplate[];
 };
 

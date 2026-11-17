@@ -7,7 +7,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "backgroundColor": "#15111f",
+    "backgroundColor": "#0a1a3f",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.pennecstv.littlememe",
@@ -18,12 +18,16 @@
     "android": {
       "package": "com.pennecstv.littlememe",
       "adaptiveIcon": {
-        "backgroundColor": "#15111f",
+        "backgroundColor": "#0a1a3f",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "permissions": ["android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE", "android.permission.ACCESS_WIFI_STATE"],
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE"
+      ],
       "predictiveBackGestureEnabled": false
     },
     "web": {

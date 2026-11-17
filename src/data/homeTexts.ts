@@ -1,25 +1,30 @@
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from "react";
 
 // Textes de l'écran d'accueil. Une combinaison est tirée au lancement de l'app,
 // puis une nouvelle après chaque partie (en quittant une partie).
 
-export const TAGLINES = ['Des memes à faire en pause déj', 'On va rigoler pendant la pause déj'];
+export const TAGLINES = [
+  "Des memes à faire en pause déj",
+  "Si personne ne fait la sieste, on va jouer",
+  "Plutôt que de jouer au baseball, on fait des memes",
+];
 
 /** Phrases surprises façon Minecraft. Ajoute les tiennes ici ! */
 export const SPLASHES = [
-  'Zéro pub !',
-  '100 % fait maison',
-  'Approuvé par ton chef (non)',
-  'Sans gluten !',
-  'Le Wifi, c’est la vie',
-  'Plus drôle que la réunion de 14h',
-  'Aussi sur ton frigo !',
-  'Pas de micro-ondes requis',
+  "Zéro pub !",
+  "100 % fait maison",
+  "Approuvé par FX (non)",
+  "Qui va prendre cher aujourd’hui?",
+  "Et c’est OK !",
+  "Plus drôle que de faire la Startup",
+  "Garranti zéro bug",
+  "Kevin dans le champ",
+  "Pause clope ?",
 ];
 
 type HomeText = { tagline: string; splash: string };
 
-const pick = <T,>(list: T[], avoid?: T): T => {
+const pick = <T>(list: T[], avoid?: T): T => {
   if (list.length <= 1) return list[0];
   let value: T;
   do value = list[Math.floor(Math.random() * list.length)];
@@ -32,7 +37,10 @@ let version = 0;
 const listeners = new Set<() => void>();
 
 export function rotateHomeText() {
-  current = { tagline: pick(TAGLINES, current.tagline), splash: pick(SPLASHES, current.splash) };
+  current = {
+    tagline: pick(TAGLINES, current.tagline),
+    splash: pick(SPLASHES, current.splash),
+  };
   version += 1;
   listeners.forEach((cb) => cb());
 }

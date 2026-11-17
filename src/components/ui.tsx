@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  Animated,
   Pressable,
   ScrollView,
   StyleProp,
@@ -12,30 +13,49 @@ import {
   ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { HalftoneBackground, StippleShade } from './Stipple';
 import { colors, fonts, radius, space, themed } from './theme';
+import { useLoop } from './useLoop';
 
 export function Screen({
   children,
   scroll = false,
   style,
-  transparent,
+  animated,
 }: {
   children: ReactNode;
   scroll?: boolean;
   style?: StyleProp<ViewStyle>;
-  /** Pas de fond : l'écran dessine le sien derrière (accueil). */
-  transparent?: boolean;
+  /** Le fond en points dérive lentement (accueil). */
+  animated?: boolean;
 }) {
   return (
-    <SafeAreaView style={[styles.screen, transparent && { backgroundColor: 'transparent' }]} edges={['top', 'bottom']}>
-      {scroll ? (
-        <ScrollView contentContainerStyle={[styles.content, style]} keyboardShouldPersistTaps="handled">
-          {children}
-        </ScrollView>
-      ) : (
-        <View style={[styles.content, { flex: 1 }, style]}>{children}</View>
-      )}
-    </SafeAreaView>
+    <View style={styles.screen}>
+      <ScreenBackground animated={animated} />
+      <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+        {scroll ? (
+          <ScrollView contentContainerStyle={[styles.content, style]} keyboardShouldPersistTaps="handled">
+            {children}
+          </ScrollView>
+        ) : (
+          <View style={[styles.content, { flex: 1 }, style]}>{children}</View>
+        )}
+      </SafeAreaView>
+    </View>
+  );
+}
+
+/** Fond en demi-teinte aux couleurs du thème, à placer en premier enfant d'un écran. */
+export function ScreenBackground({ animated }: { animated?: boolean }) {
+  const t = useLoop(9000);
+  const drift = animated ? t.interpolate({ inputRange: [0, 1], outputRange: [0, 14] }) : 0;
+  return (
+    <Animated.View
+      style={[StyleSheet.absoluteFill, { transform: [{ translateX: drift }, { translateY: Animated.multiply(drift, -1) }] }]}
+      pointerEvents="none"
+    >
+      <HalftoneBackground accent={colors.accent} accent2={colors.accent2} />
+    </Animated.View>
   );
 }
 
@@ -65,7 +85,7 @@ export function Button({ title, onPress, variant = 'primary', disabled, loading,
   const palette = {
     primary: { bg: colors.accent, fg: colors.accentText, border: colors.accent },
     secondary: { bg: colors.surfaceAlt, fg: colors.text, border: colors.border },
-    ghost: { bg: 'transparent', fg: colors.text, border: colors.border },
+    ghost: { bg: colors.bg, fg: colors.text, border: colors.border },
     danger: { bg: 'transparent', fg: colors.danger, border: colors.danger },
   }[variant];
   return (
@@ -82,6 +102,8 @@ export function Button({ title, onPress, variant = 'primary', disabled, loading,
         style,
       ]}
     >
+      {variant === 'primary' && <StippleShade color={colors.accentText} opacity={0.22} reach={0.7} />}
+      {variant === 'secondary' && <StippleShade color={colors.accent} opacity={0.3} from="right" reach={0.6} />}
       {loading ? (
         <ActivityIndicator color={palette.fg} />
       ) : (
@@ -92,7 +114,12 @@ export function Button({ title, onPress, variant = 'primary', disabled, loading,
 }
 
 export function Card({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
-  return <View style={[styles.card, style]}>{children}</View>;
+  return (
+    <View style={[styles.card, style]}>
+      <StippleShade color={colors.accent} from="bottomRight" opacity={0.18} reach={0.55} />
+      {children}
+    </View>
+  );
 }
 
 export function Stepper({
@@ -214,10 +241,11 @@ const styles = themed(() =>
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: space.md,
+      overflow: 'hidden',
     },
     buttonSmall: { minHeight: 40, borderRadius: radius.sm, paddingHorizontal: space.sm + 4 },
     buttonText: { fontSize: 16, fontFamily: fonts.heavy, letterSpacing: 0.3 },
-    card: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: space.md, gap: space.sm },
+    card: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: space.md, gap: space.sm, overflow: 'hidden' },
     row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44 },
     rowLabel: { color: colors.text, fontSize: 15, flex: 1, fontFamily: fonts.semibold },
     stepper: { flexDirection: 'row', alignItems: 'center', gap: space.sm },

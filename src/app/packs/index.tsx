@@ -43,6 +43,7 @@ Vérifie ta connexion Internet.`,
 
   return (
     <Screen scroll>
+      <Button small variant="ghost" title="Retour" onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
       <Title>Mes packs</Title>
       <Body muted>
         Ajoute tes propres images (la tête de ton pote, une capture culte…). Quand tu héberges une partie, tu choisis quels packs
@@ -96,7 +97,6 @@ Vérifie ta connexion Internet.`,
         </Pressable>
       ))}
 
-      <Button title="Retour" variant="ghost" onPress={() => router.back()} />
     </Screen>
   );
 }

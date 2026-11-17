@@ -20,7 +20,7 @@ import { Final, Reveal, RoundResults, Voting } from '../components/game/Phases';
 import { PlayerList } from '../components/game/PlayerList';
 import { Writing } from '../components/game/Writing';
 import { colors, fonts, space, themed } from '../components/theme';
-import { Body, Button, Countdown } from '../components/ui';
+import { Body, Button, Countdown, ScreenBackground } from '../components/ui';
 import { GameClient } from '../net/GameClient';
 import { leaveGame, useGameSnapshot, useSession } from '../session/session';
 import { Phase } from '../shared/types';
@@ -95,52 +95,55 @@ function Game({ client, roomCode, ip }: { client: GameClient; roomCode: string |
   const timed = view.phase !== 'lobby' && view.phase !== 'final';
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <View style={styles.header}>
-        <Pressable onPress={confirmLeave} hitSlop={12}>
-          <Text style={styles.close}>✕</Text>
-        </Pressable>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.headerTitle}>{PHASE_TITLES[view.phase]}</Text>
-          {view.round > 0 && view.phase !== 'lobby' && view.phase !== 'final' && (
-            <Text style={styles.headerSub}>
-              Manche {view.round}/{view.settings.rounds}
-            </Text>
-          )}
+    <View style={styles.screen}>
+      <ScreenBackground />
+      <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+        <View style={styles.header}>
+          <Pressable onPress={confirmLeave} hitSlop={12}>
+            <Text style={styles.close}>✕</Text>
+          </Pressable>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.headerTitle}>{PHASE_TITLES[view.phase]}</Text>
+            {view.round > 0 && view.phase !== 'lobby' && view.phase !== 'final' && (
+              <Text style={styles.headerSub}>
+                Manche {view.round}/{view.settings.rounds}
+              </Text>
+            )}
+          </View>
+          {isHost && timed && <Button small variant="ghost" title="Passer ⏭" onPress={() => client.send({ t: 'skip' })} />}
         </View>
-        {isHost && timed && <Button small variant="ghost" title="Passer ⏭" onPress={() => client.send({ t: 'skip' })} />}
-      </View>
-      {timed && (
-        <View style={{ paddingHorizontal: space.md, paddingBottom: space.sm }}>
-          <Countdown deadline={snap.deadline} total={view.phaseDurationMs} />
-        </View>
-      )}
-      {snap.status === 'reconnecting' && (
-        <View style={styles.banner}>
-          <ActivityIndicator color={colors.accentText} size="small" />
-          <Text style={styles.bannerText}>Connexion perdue, reconnexion…</Text>
-        </View>
-      )}
+        {timed && (
+          <View style={{ paddingHorizontal: space.md, paddingBottom: space.sm }}>
+            <Countdown deadline={snap.deadline} total={view.phaseDurationMs} />
+          </View>
+        )}
+        {snap.status === 'reconnecting' && (
+          <View style={styles.banner}>
+            <ActivityIndicator color={colors.accentText} size="small" />
+            <Text style={styles.bannerText}>Connexion perdue, reconnexion…</Text>
+          </View>
+        )}
 
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          {view.phase === 'lobby' && <Lobby client={client} view={view} isHost={isHost} roomCode={roomCode} ip={ip} />}
-          {view.phase === 'writing' &&
-            (view.me ? (
-              <Writing key={`${view.round}-${view.me.template.id}`} client={client} view={view} width={memeWidth} />
-            ) : (
-              <>
-                <Body style={{ textAlign: 'center' }}>Tu as rejoint en cours de manche : tu joues à la prochaine.</Body>
-                <PlayerList client={client} view={view} isHost={false} title="Qui a fini ?" showReady />
-              </>
-            ))}
-          {view.phase === 'reveal' && <Reveal client={client} view={view} width={memeWidth} />}
-          {view.phase === 'voting' && <Voting client={client} view={view} width={memeWidth} />}
-          {view.phase === 'roundResults' && <RoundResults client={client} view={view} width={memeWidth} />}
-          {view.phase === 'final' && <Final client={client} view={view} width={memeWidth} isHost={isHost} onLeave={leave} />}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+            {view.phase === 'lobby' && <Lobby client={client} view={view} isHost={isHost} roomCode={roomCode} ip={ip} />}
+            {view.phase === 'writing' &&
+              (view.me ? (
+                <Writing key={`${view.round}-${view.me.template.id}`} client={client} view={view} width={memeWidth} />
+              ) : (
+                <>
+                  <Body style={{ textAlign: 'center' }}>Tu as rejoint en cours de manche : tu joues à la prochaine.</Body>
+                  <PlayerList client={client} view={view} isHost={false} title="Qui a fini ?" showReady />
+                </>
+              ))}
+            {view.phase === 'reveal' && <Reveal client={client} view={view} width={memeWidth} />}
+            {view.phase === 'voting' && <Voting client={client} view={view} width={memeWidth} />}
+            {view.phase === 'roundResults' && <RoundResults client={client} view={view} width={memeWidth} />}
+            {view.phase === 'final' && <Final client={client} view={view} width={memeWidth} isHost={isHost} onLeave={leave} />}
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 }
 

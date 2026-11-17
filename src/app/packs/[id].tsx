@@ -30,6 +30,7 @@ export default function PackDetail() {
   const pack = getPack(id);
   const { width } = useWindowDimensions();
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [query, setQuery] = useState('');
   const [saving, setSaving] = useState(false);
 
   if (!pack) {
@@ -154,8 +155,12 @@ export default function PackDetail() {
     );
   }
 
+  const fold = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const templates = query.trim() ? pack.templates.filter((t) => fold(t.name).includes(fold(query.trim()))) : pack.templates;
+
   return (
     <Screen scroll>
+      <Button small variant="ghost" title="Retour" onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
       {editable ? (
         <TextInput
           defaultValue={pack.name}
@@ -183,8 +188,22 @@ export default function PackDetail() {
         </Card>
       )}
 
+      {pack.templates.length > 0 && (
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder={`Rechercher parmi ${pack.templates.length} memes`}
+          placeholderTextColor={colors.muted}
+          style={styles.input}
+          autoCorrect={false}
+          clearButtonMode="while-editing"
+          returnKeyType="search"
+        />
+      )}
+      {templates.length === 0 && pack.templates.length > 0 && <Body muted>Aucun meme ne correspond à « {query.trim()} ».</Body>}
+
       <View style={styles.grid}>
-        {pack.templates.map((t) => (
+        {templates.map((t) => (
           <Pressable
             key={t.id}
             disabled={!editable}
@@ -200,7 +219,6 @@ export default function PackDetail() {
       </View>
 
       {editable && <Button title="Supprimer le pack" variant="danger" onPress={confirmDeletePack} />}
-      <Button title="Retour" variant="ghost" onPress={() => router.back()} />
     </Screen>
   );
 }

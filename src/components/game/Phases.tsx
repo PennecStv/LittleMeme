@@ -172,7 +172,7 @@ export function Final({
       ))}
       <View style={{ gap: space.sm, marginTop: space.md }}>
         {isHost ? (
-          <Button title="Rejouer avec les mêmes potes" icon="🔁" onPress={() => client.send({ t: 'backToLobby' })} />
+          <Button title="Rejouer avec les mêmes potes" onPress={() => client.send({ t: 'backToLobby' })} />
         ) : (
           <Body muted style={{ textAlign: 'center' }}>
             L'hôte peut relancer une partie.
@@ -197,11 +197,11 @@ const styles = themed(() =>
       backgroundColor: colors.surface,
     },
     voteSelected: { borderColor: colors.accent },
-    voteLabel: { color: colors.text, textAlign: 'center', fontWeight: '800', paddingVertical: space.sm },
+    voteLabel: { color: colors.text, textAlign: 'center', fontFamily: fonts.heavy, paddingVertical: space.sm },
     winner: { color: colors.accent, fontFamily: fonts.display, fontSize: 22, marginBottom: space.xs },
     rankRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 4 },
     rankMedal: { fontSize: 22, width: 36 },
-    rankName: { color: colors.text, fontSize: 17, fontWeight: '700', flex: 1 },
-    rankScore: { color: colors.accent, fontWeight: '900', fontSize: 16 },
+    rankName: { color: colors.text, fontSize: 17, fontFamily: fonts.bold, flex: 1 },
+    rankScore: { color: colors.accent, fontFamily: fonts.display, fontSize: 16 },
   }),
 );

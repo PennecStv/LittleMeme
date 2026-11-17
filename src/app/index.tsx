@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, Animated, Easing, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AccessibilityInfo, Alert, Animated, Easing, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import { Avatar } from '../components/Avatar';
 import { colors, fonts, radius, setTheme, space, themed, THEMES, ThemeId, useThemeId } from '../components/theme';
 import { Button, Label, Screen } from '../components/ui';
@@ -20,10 +20,39 @@ function useLoop(duration: number, delay = 0) {
         Animated.timing(value, { toValue: 0, duration, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
       ]),
     );
-    anim.start();
+    // Pas d'animation si l'utilisateur a activé « Réduire les animations ».
+    AccessibilityInfo.isReduceMotionEnabled().then((reduce) => !reduce && anim.start());
     return () => anim.stop();
   }, [value, duration, delay]);
   return value;
+}
+
+/** Grandes taches de couleur du thème qui dérivent lentement derrière l'accueil. */
+function Blob({ color, size, x, y, duration, drift }: { color: string; size: number; x: number; y: number; duration: number; drift: number }) {
+  const t = useLoop(duration);
+  const translateX = t.interpolate({ inputRange: [0, 1], outputRange: [0, drift] });
+  const translateY = t.interpolate({ inputRange: [0, 1], outputRange: [0, -drift * 0.7] });
+  const scale = t.interpolate({ inputRange: [0, 1], outputRange: [1, 1.15] });
+  return (
+    <Animated.View
+      style={[
+        styles.blob,
+        { backgroundColor: color, width: size, height: size, left: x - size / 2, top: y - size / 2 },
+        { transform: [{ translateX }, { translateY }, { scale }] },
+      ]}
+    />
+  );
+}
+
+function AnimatedBackground() {
+  const { width, height } = useWindowDimensions();
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Blob color={colors.accent} size={width * 0.95} x={width * 0.95} y={height * 0.1} duration={9000} drift={-width * 0.25} />
+      <Blob color={colors.accent2} size={width * 0.7} x={0} y={height * 0.55} duration={11000} drift={width * 0.3} />
+      <Blob color={colors.accent} size={width * 0.8} x={width * 0.7} y={height * 1.02} duration={13000} drift={-width * 0.2} />
+    </View>
+  );
 }
 
 function Logo({ splash }: { splash: string }) {
@@ -125,6 +154,7 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <AnimatedBackground />
       <View style={styles.topBand} />
       <Screen scroll transparent style={styles.content}>
         <Logo splash={splash} />
@@ -171,6 +201,7 @@ export default function Home() {
 const styles = themed(() =>
   StyleSheet.create({
     content: { flexGrow: 1, justifyContent: 'center', gap: space.md, paddingVertical: space.xl },
+    blob: { position: 'absolute', borderRadius: 9999, opacity: 0.12 },
     topBand: { position: 'absolute', top: 0, left: 0, right: 0, height: 6, backgroundColor: colors.accent },
     hero: { alignItems: 'center', marginBottom: space.xl },
     logoTop: { fontFamily: fonts.heavy, fontSize: 18, color: colors.muted, letterSpacing: 14, marginRight: -14 },
@@ -204,7 +235,7 @@ const styles = themed(() =>
       borderWidth: 2,
       borderColor: colors.bg,
     },
-    editBadgeText: { color: colors.bg, fontSize: 13, fontWeight: '900' },
+    editBadgeText: { color: colors.bg, fontSize: 13, fontFamily: fonts.display },
     input: {
       backgroundColor: colors.surface,
       color: colors.text,
@@ -217,9 +248,10 @@ const styles = themed(() =>
       fontFamily: fonts.bold,
     },
     row: { flexDirection: 'row', gap: space.sm },
-    themes: { flexDirection: 'row', gap: space.sm },
+    themes: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
     theme: {
-      flex: 1,
+      flexBasis: '45%',
+      flexGrow: 1,
       alignItems: 'center',
       gap: 6,
       paddingVertical: space.sm,

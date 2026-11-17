@@ -1,7 +1,7 @@
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { GameClient } from '../../net/GameClient';
 import { GameView } from '../../shared/types';
-import { colors, radius, space, themed } from '../theme';
+import { colors, fonts, radius, space, themed } from '../theme';
 import { PlayerAvatar } from '../Avatar';
 import { Card, Label } from '../ui';
 
@@ -70,8 +70,8 @@ const styles = themed(() =>
       maxWidth: '100%',
     },
     me: { borderWidth: 1, borderColor: colors.accent },
-    name: { color: colors.text, fontWeight: '700', fontSize: 15, flexShrink: 1 },
-    score: { color: colors.accent, fontWeight: '900' },
-    kick: { color: colors.muted, fontSize: 16, fontWeight: '700' },
+    name: { color: colors.text, fontFamily: fonts.bold, fontSize: 15, flexShrink: 1 },
+    score: { color: colors.accent, fontFamily: fonts.display },
+    kick: { color: colors.muted, fontSize: 16, fontFamily: fonts.bold },
   }),
 );

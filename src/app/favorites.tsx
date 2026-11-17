@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useSyncExternalStore } from 'react';
 import { Alert, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { colors, radius, space, themed } from '../components/theme';
+import { colors, fonts, radius, space, themed } from '../components/theme';
 import { Body, Button, Card, Screen, Title } from '../components/ui';
 import { deleteFavorite, Favorite, favoriteFile, favoritesSignal, getFavorites, saveToGallery } from '../storage/favorites';
 
@@ -63,6 +63,6 @@ const styles = themed(() =>
   StyleSheet.create({
     grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
     item: { backgroundColor: colors.surface, borderRadius: radius.sm, overflow: 'hidden' },
-    author: { color: colors.text, padding: space.sm, fontWeight: '700' },
+    author: { color: colors.text, padding: space.sm, fontFamily: fonts.bold },
   }),
 );

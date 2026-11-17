@@ -135,7 +135,7 @@ export function Lobby({
           {templateCount === 0 && (
             <Body style={{ textAlign: 'center', color: colors.danger }}>Active au moins un pack non vide.</Body>
           )}
-          <Button title="Lancer la partie" icon="🚀" onPress={() => client.send({ t: 'start' })} disabled={templateCount === 0} />
+          <Button title="Lancer la partie" onPress={() => client.send({ t: 'start' })} disabled={templateCount === 0} />
         </View>
       )}
     </>
@@ -157,7 +157,7 @@ const styles = themed(() =>
     },
     packOn: { borderWidth: 1, borderColor: colors.accent },
     packCheck: { fontSize: 18 },
-    packName: { color: colors.text, fontSize: 16, flex: 1, fontWeight: '600' },
-    packCount: { color: colors.muted, fontWeight: '700' },
+    packName: { color: colors.text, fontSize: 16, flex: 1, fontFamily: fonts.semibold },
+    packCount: { color: colors.muted, fontFamily: fonts.bold },
   }),
 );

@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { GameClient } from '../../net/GameClient';
 import { GameView } from '../../shared/types';
 import { MemeView, useTemplateImage } from '../MemeView';
-import { colors, radius, space, themed } from '../theme';
+import { colors, fonts, radius, space, themed } from '../theme';
 import { Body, Button, Label } from '../ui';
 
 const zoneLabel = (count: number, i: number) => {
@@ -84,14 +84,13 @@ export function Writing({ client, view, width }: { client: GameClient; view: Gam
           <Button
             variant="secondary"
             title={`Autre meme (${me.rerollsLeft})`}
-            icon="🎲"
+           
             onPress={() => client.send({ t: 'reroll' })}
             style={{ flex: 1 }}
           />
         )}
         <Button
           title={me.ready ? 'Modifier' : 'Valider'}
-          icon={me.ready ? '✏️' : '✅'}
           variant={me.ready ? 'ghost' : 'primary'}
           onPress={toggleReady}
           disabled={!me.ready && empty}
@@ -119,6 +118,7 @@ const styles = themed(() =>
       paddingVertical: space.sm + 4,
       fontSize: 17,
       minHeight: 50,
+      fontFamily: fonts.semibold,
     },
     actions: { flexDirection: 'row', gap: space.sm },
   }),

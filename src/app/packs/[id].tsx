@@ -21,7 +21,7 @@ import {
 const SAMPLE = ['Quand le Wifi marche enfin', 'Et que c’est ton tour'];
 
 type Draft =
-  | { mode: 'new'; uri: string; width: number; height: number; name: string; zones: TextZone[] }
+  | { mode: 'new'; uri: string; width: number; height: number; mimeType?: string; name: string; zones: TextZone[] }
   | { mode: 'edit'; template: MemeTemplate; name: string; zones: TextZone[] };
 
 export default function PackDetail() {
@@ -45,11 +45,12 @@ export default function PackDetail() {
   const thumb = Math.floor((width - space.md * 2 - space.sm) / 2);
   const previewWidth = Math.min(width - space.md * 4, 420);
 
-  const pickImage = async () => {
-    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1, allowsEditing: true });
+  // Le recadrage du sélecteur transforme un GIF en image fixe : on le désactive pour les GIF.
+  const pickImage = async (gif: boolean) => {
+    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1, allowsEditing: !gif });
     if (res.canceled || !res.assets?.[0]) return;
     const a = res.assets[0];
-    setDraft({ mode: 'new', uri: a.uri, width: a.width, height: a.height, name: '', zones: ZONE_PRESETS[0].zones });
+    setDraft({ mode: 'new', uri: a.uri, width: a.width, height: a.height, mimeType: a.mimeType, name: '', zones: ZONE_PRESETS[0].zones });
   };
 
   const saveDraft = async () => {
@@ -57,7 +58,7 @@ export default function PackDetail() {
     setSaving(true);
     try {
       if (draft.mode === 'new') {
-        await addTemplate(pack.id, { uri: draft.uri, width: draft.width, height: draft.height }, draft.name, draft.zones);
+        await addTemplate(pack.id, { uri: draft.uri, width: draft.width, height: draft.height, mimeType: draft.mimeType }, draft.name, draft.zones);
       } else {
         updateTemplate(pack.id, draft.template.id, { name: draft.name.trim() || draft.template.name, zones: draft.zones });
       }
@@ -100,7 +101,7 @@ export default function PackDetail() {
       draft.mode === 'new'
         ? { id: 'draft', name: draft.name, aspect: draft.width / draft.height, hasImage: true, zones: draft.zones }
         : { ...draft.template, zones: draft.zones };
-    const imageUri = draft.mode === 'new' ? draft.uri : imageFile(draft.template.id).uri;
+    const imageUri = draft.mode === 'new' ? draft.uri : imageFile(draft.template.id, draft.template.gif).uri;
     return (
       <Screen scroll>
         <Title size={28}>{draft.mode === 'new' ? 'Nouveau meme' : 'Modifier le meme'}</Title>
@@ -131,7 +132,7 @@ export default function PackDetail() {
             );
           })}
         </View>
-        <Button title="Enregistrer" icon="💾" onPress={saveDraft} loading={saving} />
+        <Button title="Enregistrer" onPress={saveDraft} loading={saving} />
         {draft.mode === 'edit' && (
           <Button title="Supprimer ce meme" variant="danger" onPress={() => confirmDeleteTemplate(draft.template)} />
         )}
@@ -153,7 +154,10 @@ export default function PackDetail() {
         <Title>{pack.name}</Title>
       )}
       {editable ? (
-        <Button title="Ajouter une image" icon="➕" onPress={pickImage} />
+        <View style={{ flexDirection: 'row', gap: space.sm }}>
+          <Button title="Ajouter une image" onPress={() => pickImage(false)} style={{ flex: 1 }} />
+          <Button title="Ajouter un GIF" variant="secondary" onPress={() => pickImage(true)} style={{ flex: 1 }} />
+        </View>
       ) : (
         <Body muted>Pack intégré à l'app (lecture seule). Crée ton propre pack pour ajouter tes images.</Body>
       )}
@@ -175,7 +179,7 @@ export default function PackDetail() {
             onPress={() => setDraft({ mode: 'edit', template: t, name: t.name, zones: t.zones })}
             style={styles.thumb}
           >
-            <MemeView template={t} captions={[]} width={thumb} imageUri={t.hasImage ? imageFile(t.id).uri : null} />
+            <MemeView template={t} captions={[]} width={thumb} imageUri={t.hasImage ? imageFile(t.id, t.gif).uri : null} />
             <Text style={styles.thumbName} numberOfLines={1}>
               {t.name}
             </Text>
@@ -208,6 +212,7 @@ const styles = themed(() =>
       fontSize: 16,
       borderWidth: 1,
       borderColor: colors.border,
+      fontFamily: fonts.semibold,
     },
     presets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
     preset: {
@@ -217,9 +222,9 @@ const styles = themed(() =>
       backgroundColor: colors.surfaceAlt,
     },
     presetOn: { backgroundColor: colors.accent },
-    presetText: { color: colors.text, fontWeight: '700' },
+    presetText: { color: colors.text, fontFamily: fonts.bold },
     grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
     thumb: { backgroundColor: colors.surface, borderRadius: radius.sm, overflow: 'hidden', alignSelf: 'flex-start' },
-    thumbName: { color: colors.text, padding: space.sm, fontWeight: '600', maxWidth: 160 },
+    thumbName: { color: colors.text, padding: space.sm, fontFamily: fonts.semibold, maxWidth: 160 },
   }),
 );

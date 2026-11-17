@@ -5,7 +5,7 @@ import { GameClient } from '../net/GameClient';
 import { Submission } from '../shared/types';
 import { addFavorite, saveToGallery } from '../storage/favorites';
 import { MemeView, useTemplateImage } from './MemeView';
-import { colors, radius, space, themed } from './theme';
+import { colors, fonts, radius, space, themed } from './theme';
 import { Button } from './ui';
 
 export function SaveableMeme({
@@ -60,7 +60,6 @@ export function SaveableMeme({
         <Button
           small
           title={saved ? 'Sauvegardé' : 'Garder'}
-          icon={saved ? '✅' : '💾'}
           variant={saved ? 'ghost' : 'secondary'}
           disabled={saved || image === undefined}
           loading={busy}
@@ -75,7 +74,7 @@ const styles = themed(() =>
   StyleSheet.create({
     card: { backgroundColor: colors.surface, borderRadius: radius.md, overflow: 'hidden' },
     footer: { flexDirection: 'row', alignItems: 'center', padding: space.sm + 4, gap: space.sm },
-    author: { color: colors.text, fontWeight: '800', fontSize: 16 },
-    votes: { color: colors.accent, fontWeight: '700', marginTop: 2 },
+    author: { color: colors.text, fontFamily: fonts.heavy, fontSize: 16 },
+    votes: { color: colors.accent, fontFamily: fonts.bold, marginTop: 2 },
   }),
 );

@@ -150,9 +150,9 @@ const styles = themed(() =>
     screen: { flex: 1, backgroundColor: colors.bg },
     center: { alignItems: 'center', justifyContent: 'center', gap: space.md, padding: space.md },
     header: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.md, paddingVertical: space.sm },
-    close: { color: colors.muted, fontSize: 24, fontWeight: '700', paddingHorizontal: 4 },
+    close: { color: colors.muted, fontSize: 24, fontFamily: fonts.bold, paddingHorizontal: 4 },
     headerTitle: { color: colors.text, fontFamily: fonts.display, fontSize: 26 },
-    headerSub: { color: colors.muted, fontWeight: '700' },
+    headerSub: { color: colors.muted, fontFamily: fonts.bold },
     banner: {
       flexDirection: 'row',
       gap: space.sm,
@@ -161,7 +161,7 @@ const styles = themed(() =>
       backgroundColor: colors.accent,
       padding: space.sm,
     },
-    bannerText: { color: colors.accentText, fontWeight: '800' },
+    bannerText: { color: colors.accentText, fontFamily: fonts.heavy },
     content: { padding: space.md, gap: space.md, paddingBottom: space.xl * 2 },
   }),
 );

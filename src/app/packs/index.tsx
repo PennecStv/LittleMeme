@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useState, useSyncExternalStore } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { colors, radius, space, themed } from '../../components/theme';
+import { colors, fonts, radius, space, themed } from '../../components/theme';
 import { Body, Button, Card, Label, Screen, Title } from '../../components/ui';
 import { createPack, getAllPacks, packsSignal } from '../../storage/packs';
 
@@ -72,6 +72,7 @@ const styles = themed(() =>
       paddingHorizontal: space.md,
       height: 44,
       fontSize: 16,
+      fontFamily: fonts.semibold,
     },
     pack: {
       flexDirection: 'row',
@@ -82,7 +83,7 @@ const styles = themed(() =>
       padding: space.md,
     },
     packIcon: { fontSize: 30 },
-    packName: { color: colors.text, fontSize: 18, fontWeight: '800' },
+    packName: { color: colors.text, fontSize: 18, fontFamily: fonts.heavy },
     packMeta: { color: colors.muted, marginTop: 2 },
     chevron: { color: colors.muted, fontSize: 30 },
   }),

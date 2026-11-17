@@ -10,10 +10,12 @@ import { createSignal, ensureDir, randomId, readJson, writeJson } from './files'
 export const packsSignal = createSignal();
 
 const MAX_IMAGE_SIZE = 1080;
+// Les GIF passent en entier sur le Wifi à chaque joueur : on limite leur poids.
+const MAX_GIF_BYTES = 8_000_000;
 
 const packsDir = () => ensureDir('packs');
 const indexFile = () => new File(packsDir(), 'index.json');
-export const imageFile = (templateId: string) => new File(packsDir(), `${templateId}.jpg`);
+export const imageFile = (templateId: string, gif?: boolean) => new File(packsDir(), `${templateId}.${gif ? 'gif' : 'jpg'}`);
 
 let cache: MemePack[] | null = null;
 
@@ -77,10 +79,27 @@ export const ZONE_PRESETS: { key: string; label: string; zones: TextZone[] }[] =
 /** Redimensionne et copie l'image choisie dans le stockage de l'app, puis l'ajoute au pack. */
 export async function addTemplate(
   packId: string,
-  source: { uri: string; width: number; height: number },
+  source: { uri: string; width: number; height: number; mimeType?: string },
   name: string,
   zones: TextZone[],
 ): Promise<MemeTemplate> {
+  const isGif = source.mimeType === 'image/gif' || /\.gif$/i.test(source.uri);
+  if (isGif) {
+    // Un GIF garde son animation : pas de redimensionnement, il est copié tel quel.
+    const file = new File(source.uri);
+    if ((file.size ?? 0) > MAX_GIF_BYTES) throw new Error(`GIF trop lourd (max ${MAX_GIF_BYTES / 1_000_000} Mo)`);
+    const template: MemeTemplate = {
+      id: randomId('t'),
+      name: name.trim() || 'Sans titre',
+      aspect: source.width / source.height,
+      hasImage: true,
+      gif: true,
+      zones,
+    };
+    file.copySync(imageFile(template.id, true));
+    save(getUserPacks().map((p) => (p.id === packId ? { ...p, templates: [...p.templates, template] } : p)));
+    return template;
+  }
   const ctx = ImageManipulator.manipulate(source.uri);
   const longest = Math.max(source.width, source.height);
   if (longest > MAX_IMAGE_SIZE) {
@@ -117,8 +136,7 @@ export function deleteTemplate(packId: string, templateId: string) {
 
 function deleteImage(templateId: string) {
   try {
-    const f = imageFile(templateId);
-    if (f.exists) f.delete();
+    for (const f of [imageFile(templateId), imageFile(templateId, true)]) if (f.exists) f.delete();
   } catch {
     // tant pis
   }
@@ -126,7 +144,8 @@ function deleteImage(templateId: string) {
 
 /** Utilisé par l'hôte pour envoyer une image aux autres joueurs. */
 export async function readTemplateImage(templateId: string): Promise<string | null> {
-  const f = imageFile(templateId);
+  const gif = imageFile(templateId, true);
+  const f = gif.exists ? gif : imageFile(templateId);
   if (!f.exists) return null;
-  return `data:image/jpeg;base64,${await f.base64()}`;
+  return `data:image/${gif.exists ? 'gif' : 'jpeg'};base64,${await f.base64()}`;
 }

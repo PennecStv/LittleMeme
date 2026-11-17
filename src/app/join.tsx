@@ -56,7 +56,7 @@ export default function Join() {
           returnKeyType="go"
         />
       </View>
-      <Button title="Rejoindre" icon="🚪" onPress={() => join(code)} loading={joining} disabled={!code.trim()} />
+      <Button title="Rejoindre" onPress={() => join(code)} loading={joining} disabled={!code.trim()} />
 
       {scanning ? (
         <View style={styles.cameraWrap}>
@@ -75,7 +75,7 @@ export default function Join() {
       ) : null}
       <Button
         title={scanning ? 'Annuler le scan' : 'Scanner le QR code'}
-        icon="📷"
+       
         variant="secondary"
         onPress={scanning ? () => setScanning(false) : startScan}
       />

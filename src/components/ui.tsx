@@ -57,12 +57,11 @@ type ButtonProps = {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   disabled?: boolean;
   loading?: boolean;
-  icon?: string;
   style?: StyleProp<ViewStyle>;
   small?: boolean;
 };
 
-export function Button({ title, onPress, variant = 'primary', disabled, loading, icon, style, small }: ButtonProps) {
+export function Button({ title, onPress, variant = 'primary', disabled, loading, style, small }: ButtonProps) {
   const palette = {
     primary: { bg: colors.accent, fg: colors.accentText, border: colors.accent },
     secondary: { bg: colors.surfaceAlt, fg: colors.text, border: colors.border },
@@ -87,7 +86,6 @@ export function Button({ title, onPress, variant = 'primary', disabled, loading,
         <ActivityIndicator color={palette.fg} />
       ) : (
         <Text style={[styles.buttonText, small && { fontSize: 15 }, { color: palette.fg }]}>
-          {icon ? `${icon}  ` : ''}
           {title}
         </Text>
       )}
@@ -233,7 +231,7 @@ const styles = themed(() =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    stepBtnText: { color: colors.text, fontSize: 22, fontWeight: '700', marginTop: -2 },
+    stepBtnText: { color: colors.text, fontSize: 22, fontFamily: fonts.bold, marginTop: -2 },
     stepValue: { color: colors.accent, fontSize: 15, fontFamily: fonts.heavy, minWidth: 64, textAlign: 'center' },
     countdown: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
     countdownTrack: { flex: 1, height: 10, borderRadius: 5, backgroundColor: colors.surfaceAlt, overflow: 'hidden' },

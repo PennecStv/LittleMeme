@@ -22,6 +22,8 @@ export type MemeTemplate = {
   zones: TextZone[];
   /** Image fournie par un pack perso : récupérée via le réseau avec son id. */
   hasImage: boolean;
+  /** Image animée (GIF), envoyée telle quelle. */
+  gif?: boolean;
   bg?: string;
   panels?: Panel[];
   emojis?: EmojiItem[];

@@ -3,7 +3,7 @@ import { useSyncExternalStore } from 'react';
 // Textes de l'écran d'accueil. Une combinaison est tirée au lancement de l'app,
 // puis une nouvelle après chaque partie (en quittant une partie).
 
-export const TAGLINES = ['Des memes à faire entre midi et 2', 'On va rigoler pendant la pause déj'];
+export const TAGLINES = ['Des memes à faire en pause déj', 'On va rigoler pendant la pause déj'];
 
 /** Phrases surprises façon Minecraft. Ajoute les tiennes ici ! */
 export const SPLASHES = [

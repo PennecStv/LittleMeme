@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Animated,
+  Modal,
   Pressable,
   ScrollView,
   StyleProp,
@@ -119,6 +120,42 @@ export function Card({ children, style }: { children: ReactNode; style?: StylePr
       <StippleShade color={colors.accent} from="bottomRight" opacity={0.18} reach={0.55} />
       {children}
     </View>
+  );
+}
+
+/** Boîte de confirmation au style de l'app (remplace la popup native du téléphone). */
+export function ConfirmDialog({
+  visible,
+  title,
+  message,
+  confirmLabel,
+  cancelLabel = 'Annuler',
+  onConfirm,
+  onCancel,
+}: {
+  visible: boolean;
+  title: string;
+  message?: string;
+  confirmLabel: string;
+  cancelLabel?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel} statusBarTranslucent>
+      <Pressable style={styles.backdrop} onPress={onCancel} accessibilityLabel={cancelLabel}>
+        {/* Pressable vide : un appui sur la carte ne doit pas fermer la boîte. */}
+        <Pressable style={styles.dialog} onPress={() => {}}>
+          <StippleShade color={colors.accent} from="bottomRight" opacity={0.25} reach={0.6} />
+          <Text style={styles.dialogTitle}>{title}</Text>
+          {message ? <Text style={[styles.body, { color: colors.muted }]}>{message}</Text> : null}
+          <View style={styles.dialogActions}>
+            <Button title={cancelLabel} variant="secondary" onPress={onCancel} style={{ flex: 1 }} />
+            <Button title={confirmLabel} variant="danger" onPress={onConfirm} style={{ flex: 1 }} />
+          </View>
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -245,6 +282,18 @@ const styles = themed(() =>
     },
     buttonSmall: { minHeight: 40, borderRadius: radius.sm, paddingHorizontal: space.sm + 4 },
     buttonText: { fontSize: 16, fontFamily: fonts.heavy, letterSpacing: 0.3 },
+    backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', padding: space.lg },
+    dialog: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      borderWidth: 2,
+      borderColor: colors.border,
+      padding: space.lg,
+      gap: space.md,
+      overflow: 'hidden',
+    },
+    dialogTitle: { fontFamily: fonts.display, color: colors.text, fontSize: 24 },
+    dialogActions: { flexDirection: 'row', gap: space.sm, marginTop: space.xs },
     card: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: space.md, gap: space.sm, overflow: 'hidden' },
     row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44 },
     rowLabel: { color: colors.text, fontSize: 15, flex: 1, fontFamily: fonts.semibold },

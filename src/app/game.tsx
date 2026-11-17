@@ -1,6 +1,6 @@
 import { useKeepAwake } from 'expo-keep-awake';
 import { Redirect, router } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -20,7 +20,7 @@ import { Final, Reveal, RoundResults, Voting } from '../components/game/Phases';
 import { PlayerList } from '../components/game/PlayerList';
 import { Writing } from '../components/game/Writing';
 import { colors, fonts, space, themed } from '../components/theme';
-import { Body, Button, Countdown, ScreenBackground } from '../components/ui';
+import { Body, Button, ConfirmDialog, Countdown, ScreenBackground } from '../components/ui';
 import { GameClient } from '../net/GameClient';
 import { leaveGame, useGameSnapshot, useSession } from '../session/session';
 import { Phase } from '../shared/types';
@@ -46,6 +46,7 @@ function Game({ client, roomCode, ip }: { client: GameClient; roomCode: string |
   const { width: screenWidth } = useWindowDimensions();
   const memeWidth = Math.min(screenWidth - space.md * 2, 520);
   const view = snap.view;
+  const [askLeave, setAskLeave] = useState(false);
 
   const leave = () => {
     router.replace('/');
@@ -53,11 +54,8 @@ function Game({ client, roomCode, ip }: { client: GameClient; roomCode: string |
   };
 
   const confirmLeave = () => {
-    if (snap.status === 'closed') return leave();
-    Alert.alert('Quitter la partie ?', snap.isHost ? 'Tu es l’hôte : la partie s’arrêtera pour tout le monde.' : undefined, [
-      { text: 'Rester', style: 'cancel' },
-      { text: 'Quitter', style: 'destructive', onPress: leave },
-    ]);
+    if (snap.status === 'closed' || !view) return leave();
+    setAskLeave(true);
   };
 
   // Bouton retour Android : on demande confirmation au lieu de quitter la partie.
@@ -143,6 +141,20 @@ function Game({ client, roomCode, ip }: { client: GameClient; roomCode: string |
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
+      <ConfirmDialog
+        visible={askLeave}
+        title="Quitter la partie ?"
+        message={
+          snap.isHost ? 'Tu es l’hôte : la partie s’arrêtera pour tout le monde.' : 'Tu pourras revenir avec le code de la salle.'
+        }
+        confirmLabel="Quitter"
+        cancelLabel="Rester"
+        onConfirm={() => {
+          setAskLeave(false);
+          leave();
+        }}
+        onCancel={() => setAskLeave(false)}
+      />
     </View>
   );
 }

@@ -17,7 +17,7 @@ export const SPLASHES = [
   "Qui va prendre cher aujourd’hui?",
   "Et c’est OK !",
   "Plus drôle que de faire la Startup",
-  "Garranti zéro bug",
+  "Garantie zéro bug",
   "Kevin dans le champ",
   "Pause clope ?",
 ];

@@ -84,7 +84,7 @@ export function Writing({ client, view, width }: { client: GameClient; view: Gam
           <Button
             variant="secondary"
             title={`Autre meme (${me.rerollsLeft})`}
-           
+
             onPress={() => client.send({ t: 'reroll' })}
             style={{ flex: 1 }}
           />

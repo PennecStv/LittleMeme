@@ -75,7 +75,7 @@ export default function Join() {
       ) : null}
       <Button
         title={scanning ? 'Annuler le scan' : 'Scanner le QR code'}
-       
+
         variant="secondary"
         onPress={scanning ? () => setScanning(false) : startScan}
       />

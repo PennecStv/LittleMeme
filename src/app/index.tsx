@@ -1,7 +1,18 @@
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { AccessibilityInfo, Alert, Animated, Easing, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Alert,
+  Animated,
+  Easing,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { Avatar } from '../components/Avatar';
 import { colors, fonts, radius, setTheme, space, themed, THEMES, ThemeId, useThemeId } from '../components/theme';
 import { Button, Label, Screen } from '../components/ui';
@@ -28,7 +39,21 @@ function useLoop(duration: number, delay = 0) {
 }
 
 /** Grandes taches de couleur du thème qui dérivent lentement derrière l'accueil. */
-function Blob({ color, size, x, y, duration, drift }: { color: string; size: number; x: number; y: number; duration: number; drift: number }) {
+function Blob({
+  color,
+  size,
+  x,
+  y,
+  duration,
+  drift,
+}: {
+  color: string;
+  size: number;
+  x: number;
+  y: number;
+  duration: number;
+  drift: number;
+}) {
   const t = useLoop(duration);
   const translateX = t.interpolate({ inputRange: [0, 1], outputRange: [0, drift] });
   const translateY = t.interpolate({ inputRange: [0, 1], outputRange: [0, -drift * 0.7] });
@@ -64,7 +89,11 @@ function Logo({ splash }: { splash: string }) {
       <Text style={styles.logoBottom}>MEME</Text>
       <View style={styles.logoBar} />
       {/* Phrase surprise façon Minecraft */}
-      <Animated.Text numberOfLines={1} adjustsFontSizeToFit style={[styles.splash, { transform: [{ rotate: '-6deg' }, { scale }] }]}>
+      <Animated.Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        style={[styles.splash, { transform: [{ rotate: '-6deg' }, { scale }] }]}
+      >
         {splash}
       </Animated.Text>
     </View>
@@ -121,7 +150,12 @@ export default function Home() {
   };
 
   const pickAvatar = async () => {
-    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [1, 1], quality: 1 });
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
     if (res.canceled || !res.assets?.[0]) return;
     try {
       await setAvatar(res.assets[0].uri);
@@ -182,11 +216,7 @@ export default function Home() {
         </View>
 
         <Button title="Créer une partie" onPress={create} loading={hosting} />
-        <Button
-          title="Rejoindre une partie"
-          variant="secondary"
-          onPress={() => !needName() && router.push('/join')}
-        />
+        <Button title="Rejoindre une partie" variant="secondary" onPress={() => !needName() && router.push('/join')} />
         <View style={styles.row}>
           <Button title="Mes packs" variant="ghost" onPress={() => router.push('/packs')} style={{ flex: 1 }} />
           <Button title="Favoris" variant="ghost" onPress={() => router.push('/favorites')} style={{ flex: 1 }} />
@@ -205,7 +235,14 @@ const styles = themed(() =>
     topBand: { position: 'absolute', top: 0, left: 0, right: 0, height: 6, backgroundColor: colors.accent },
     hero: { alignItems: 'center', marginBottom: space.xl },
     logoTop: { fontFamily: fonts.heavy, fontSize: 18, color: colors.muted, letterSpacing: 14, marginRight: -14 },
-    logoBottom: { fontFamily: fonts.display, fontSize: 92, color: colors.text, lineHeight: 104, letterSpacing: -3, marginTop: -6 },
+    logoBottom: {
+      fontFamily: fonts.display,
+      fontSize: 92,
+      color: colors.text,
+      lineHeight: 104,
+      letterSpacing: -3,
+      marginTop: -6,
+    },
     logoBar: { width: 72, height: 8, borderRadius: 4, backgroundColor: colors.accent, marginTop: 2 },
     splash: {
       position: 'absolute',

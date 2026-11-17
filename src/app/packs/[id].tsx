@@ -50,7 +50,15 @@ export default function PackDetail() {
     const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1, allowsEditing: !gif });
     if (res.canceled || !res.assets?.[0]) return;
     const a = res.assets[0];
-    setDraft({ mode: 'new', uri: a.uri, width: a.width, height: a.height, mimeType: a.mimeType, name: '', zones: ZONE_PRESETS[0].zones });
+    setDraft({
+      mode: 'new',
+      uri: a.uri,
+      width: a.width,
+      height: a.height,
+      mimeType: a.mimeType,
+      name: '',
+      zones: ZONE_PRESETS[0].zones,
+    });
   };
 
   const saveDraft = async () => {
@@ -58,7 +66,12 @@ export default function PackDetail() {
     setSaving(true);
     try {
       if (draft.mode === 'new') {
-        await addTemplate(pack.id, { uri: draft.uri, width: draft.width, height: draft.height, mimeType: draft.mimeType }, draft.name, draft.zones);
+        await addTemplate(
+          pack.id,
+          { uri: draft.uri, width: draft.width, height: draft.height, mimeType: draft.mimeType },
+          draft.name,
+          draft.zones,
+        );
       } else {
         updateTemplate(pack.id, draft.template.id, { name: draft.name.trim() || draft.template.name, zones: draft.zones });
       }
@@ -164,7 +177,6 @@ export default function PackDetail() {
 
       {pack.templates.length === 0 && (
         <Card style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 40 }}>🖼️</Text>
           <Body muted style={{ textAlign: 'center' }}>
             Pack vide. Ajoute des photos depuis ta galerie !
           </Body>

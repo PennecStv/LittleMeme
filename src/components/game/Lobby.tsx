@@ -114,7 +114,7 @@ export function Lobby({
           const on = s.packIds.includes(p.id);
           return (
             <Pressable key={p.id} disabled={!isHost} onPress={() => togglePack(p.id)} style={[styles.pack, on && styles.packOn]}>
-              <Text style={styles.packCheck}>{on ? '✅' : '⬜'}</Text>
+              <View style={[styles.packCheck, on && styles.packCheckOn]} />
               <Text style={styles.packName} numberOfLines={1}>
                 {p.name}
               </Text>
@@ -129,7 +129,7 @@ export function Lobby({
         <View style={{ gap: space.sm }}>
           {view.players.length < 2 && (
             <Body muted style={{ textAlign: 'center' }}>
-              Tu peux lancer seul pour tester, mais c'est plus drôle à plusieurs 😉
+              Tu peux lancer seul pour tester, mais c'est plus drôle à plusieurs.
             </Body>
           )}
           {templateCount === 0 && (
@@ -156,7 +156,8 @@ const styles = themed(() =>
       backgroundColor: colors.surfaceAlt,
     },
     packOn: { borderWidth: 1, borderColor: colors.accent },
-    packCheck: { fontSize: 18 },
+    packCheck: { width: 20, height: 20, borderRadius: 6, borderWidth: 2, borderColor: colors.muted },
+    packCheckOn: { backgroundColor: colors.accent, borderColor: colors.accent },
     packName: { color: colors.text, fontSize: 16, flex: 1, fontFamily: fonts.semibold },
     packCount: { color: colors.muted, fontFamily: fonts.bold },
   }),

@@ -25,7 +25,7 @@ export default function Favorites() {
         text: 'Mettre dans la galerie',
         onPress: async () => {
           const ok = await saveToGallery(uri).catch(() => false);
-          Alert.alert(ok ? 'Ajouté à ta galerie 📸' : 'Accès aux photos refusé');
+          Alert.alert(ok ? 'Ajouté à ta galerie' : 'Accès aux photos refusé');
         },
       },
       { text: 'Supprimer', style: 'destructive', onPress: () => deleteFavorite(fav.id) },
@@ -38,7 +38,6 @@ export default function Favorites() {
       <Title>Mes favoris</Title>
       {favorites.length === 0 && (
         <Card style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 40 }}>💾</Text>
           <Body muted style={{ textAlign: 'center' }}>
             Pas encore de favoris. Dans le récap d'une manche ou en fin de partie, appuie sur « Garder » sous un meme.
           </Body>

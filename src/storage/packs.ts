@@ -1,6 +1,8 @@
-import { File } from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 import { SaveFormat, ImageManipulator } from 'expo-image-manipulator';
+import { Image } from 'react-native';
 import { BUILTIN_PACK } from '../data/builtinPack';
+import { MEMEGEN_TEMPLATES_URL, memegenConfigUrl, MemegenTemplate, parseMemegenZones } from '../shared/memegen';
 import { MemePack, MemeTemplate, TextZone } from '../shared/types';
 import { createSignal, ensureDir, randomId, readJson, writeJson } from './files';
 
@@ -148,4 +150,40 @@ export async function readTemplateImage(templateId: string): Promise<string | nu
   const f = gif.exists ? gif : imageFile(templateId);
   if (!f.exists) return null;
   return `data:image/${gif.exists ? 'gif' : 'jpeg'};base64,${await f.base64()}`;
+}
+
+export const MEMEGEN_PACK_NAME = 'Memes populaires';
+
+/**
+ * Télécharge les templates de memegen.link dans un pack local (Internet requis une seule fois).
+ * Relancer l'import reprend là où il s'est arrêté : les memes déjà présents sont sautés.
+ */
+export async function importMemegenPack(onProgress: (done: number, total: number) => void) {
+  const res = await fetch(MEMEGEN_TEMPLATES_URL);
+  if (!res.ok) throw new Error(`memegen.link indisponible (HTTP ${res.status})`);
+  const list: MemegenTemplate[] = await res.json();
+  const pack = getUserPacks().find((p) => p.name === MEMEGEN_PACK_NAME) ?? createPack(MEMEGEN_PACK_NAME);
+  const existing = new Set(pack.templates.map((t) => t.name));
+  let added = 0;
+  let failed = 0;
+  // Un par un : addTemplate réécrit l'index des packs, des appels en parallèle s'écraseraient.
+  for (const [i, t] of list.entries()) {
+    onProgress(i, list.length);
+    if (existing.has(t.name)) continue;
+    try {
+      const tmp = new File(Paths.cache, `memegen-${i}.jpg`);
+      const [yml, file] = await Promise.all([
+        fetch(memegenConfigUrl(t.id)).then((r) => (r.ok ? r.text() : '')),
+        File.downloadFileAsync(t.blank, tmp, { idempotent: true }),
+      ]);
+      const { width, height } = await Image.getSize(file.uri);
+      await addTemplate(pack.id, { uri: file.uri, width, height }, t.name, parseMemegenZones(yml, t.lines));
+      file.delete();
+      added++;
+    } catch {
+      failed++;
+    }
+  }
+  onProgress(list.length, list.length);
+  return { added, failed };
 }

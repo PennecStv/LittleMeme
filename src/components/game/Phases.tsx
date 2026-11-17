@@ -24,7 +24,7 @@ export function Reveal({ client, view, width }: { client: GameClient; view: Game
       <View key={current.id} style={styles.memeShadow}>
         <MemeView template={current.template} captions={current.captions} width={width} imageUri={image} />
       </View>
-      <Text style={styles.author}>{mine ? 'Ton meme 😏' : `par ${current.playerName}`}</Text>
+      <Text style={styles.author}>{mine ? 'Ton meme' : `par ${current.playerName}`}</Text>
     </>
   );
 }
@@ -54,7 +54,7 @@ function VoteCard({
       style={[styles.voteCard, selected && styles.voteSelected, mine && { opacity: 0.5 }]}
     >
       <MemeView template={sub.template} captions={sub.captions} width={width} imageUri={image} />
-      <Text style={styles.voteLabel}>{mine ? 'Ton meme' : selected ? '🔥 Ton vote' : 'Voter'}</Text>
+      <Text style={styles.voteLabel}>{mine ? 'Ton meme' : selected ? 'Ton vote' : 'Voter'}</Text>
     </Pressable>
   );
 }
@@ -103,14 +103,13 @@ export function RoundResults({ client, view, width }: { client: GameClient; view
       </Body>
       {subs.length === 0 && (
         <Card style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 40 }}>🦗</Text>
           <Body>Personne n'a rien écrit cette manche…</Body>
         </Card>
       )}
       {voting && <PlayerList client={client} view={view} isHost={false} title="Classement" showScores />}
       {subs.map((sub, i) => (
         <View key={sub.id}>
-          {voting && i === 0 && sub.votes > 0 && <Text style={styles.winner}>🏆 Meme de la manche</Text>}
+          {voting && i === 0 && sub.votes > 0 && <Text style={styles.winner}>Meme de la manche</Text>}
           <SaveableMeme client={client} submission={sub} width={width} />
         </View>
       ))}
@@ -135,7 +134,6 @@ export function Final({
 }) {
   const voting = view.settings.votingEnabled;
   const ranking = [...view.players].sort((a, b) => b.score - a.score);
-  const medals = ['🥇', '🥈', '🥉'];
   return (
     <>
       <Title size={44} style={{ textAlign: 'center', color: colors.accent }}>
@@ -146,7 +144,7 @@ export function Final({
           <Label>Classement</Label>
           {ranking.map((p, i) => (
             <View key={p.id} style={styles.rankRow}>
-              <Text style={styles.rankMedal}>{medals[i] ?? `${i + 1}.`}</Text>
+              <Text style={styles.rankMedal}>{i + 1}</Text>
               <PlayerAvatar client={client} player={p} size={34} />
               <Text style={styles.rankName} numberOfLines={1}>
                 {p.name}
@@ -200,7 +198,7 @@ const styles = themed(() =>
     voteLabel: { color: colors.text, textAlign: 'center', fontFamily: fonts.heavy, paddingVertical: space.sm },
     winner: { color: colors.accent, fontFamily: fonts.display, fontSize: 22, marginBottom: space.xs },
     rankRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 4 },
-    rankMedal: { fontSize: 22, width: 36 },
+    rankMedal: { fontSize: 20, width: 28, fontFamily: fonts.display, color: colors.accent },
     rankName: { color: colors.text, fontSize: 17, fontFamily: fonts.bold, flex: 1 },
     rankScore: { color: colors.accent, fontFamily: fonts.display, fontSize: 16 },
   }),

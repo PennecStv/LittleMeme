@@ -77,7 +77,6 @@ function Game({ client, roomCode, ip }: { client: GameClient; roomCode: string |
   if (snap.status === 'closed') {
     return (
       <SafeAreaView style={[styles.screen, styles.center]}>
-        <Text style={{ fontSize: 56 }}>👋</Text>
         <Body style={{ textAlign: 'center' }}>{snap.error ?? 'La partie est terminée.'}</Body>
         <Button title="Retour à l'accueil" onPress={leave} style={{ alignSelf: 'stretch', margin: space.md }} />
       </SafeAreaView>
@@ -131,7 +130,7 @@ function Game({ client, roomCode, ip }: { client: GameClient; roomCode: string |
               <Writing key={`${view.round}-${view.me.template.id}`} client={client} view={view} width={memeWidth} />
             ) : (
               <>
-                <Body style={{ textAlign: 'center' }}>Tu as rejoint en cours de manche : tu joues à la prochaine 😉</Body>
+                <Body style={{ textAlign: 'center' }}>Tu as rejoint en cours de manche : tu joues à la prochaine.</Body>
                 <PlayerList client={client} view={view} isHost={false} title="Qui a fini ?" showReady />
               </>
             ))}

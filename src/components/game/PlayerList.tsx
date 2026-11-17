@@ -37,11 +37,13 @@ export function PlayerList({
           <View key={p.id} style={[styles.chip, !p.connected && { opacity: 0.4 }, p.id === me && styles.me]}>
             <PlayerAvatar client={client} player={p} size={28} />
             <Text style={styles.name} numberOfLines={1}>
-              {p.isHost ? '👑 ' : ''}
               {p.name}
+              {p.isHost ? ' (hôte)' : ''}
               {!p.connected ? ' (déco)' : ''}
             </Text>
-            {showReady && <Text>{p.ready ? '✅' : '✍️'}</Text>}
+            {showReady && (
+              <Text style={[styles.status, p.ready && { color: colors.accent }]}>{p.ready ? 'Prêt' : 'En cours'}</Text>
+            )}
             {showScores && <Text style={styles.score}>{p.score}</Text>}
             {isHost && !p.isHost && view.phase === 'lobby' && (
               <Pressable hitSlop={10} onPress={() => kick(p.id, p.name)}>
@@ -71,6 +73,7 @@ const styles = themed(() =>
     },
     me: { borderWidth: 1, borderColor: colors.accent },
     name: { color: colors.text, fontFamily: fonts.bold, fontSize: 15, flexShrink: 1 },
+    status: { color: colors.muted, fontFamily: fonts.bold, fontSize: 13 },
     score: { color: colors.accent, fontFamily: fonts.display },
     kick: { color: colors.muted, fontSize: 16, fontFamily: fonts.bold },
   }),

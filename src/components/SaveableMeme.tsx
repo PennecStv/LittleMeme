@@ -53,7 +53,7 @@ export function SaveableMeme({
           )}
           {submission.votes > 0 && (
             <Text style={styles.votes}>
-              {'🔥'.repeat(Math.min(submission.votes, 5))} {submission.votes} vote{submission.votes > 1 ? 's' : ''}
+              {submission.votes} vote{submission.votes > 1 ? 's' : ''}
             </Text>
           )}
         </View>

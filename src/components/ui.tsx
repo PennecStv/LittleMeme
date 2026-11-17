@@ -85,9 +85,7 @@ export function Button({ title, onPress, variant = 'primary', disabled, loading,
       {loading ? (
         <ActivityIndicator color={palette.fg} />
       ) : (
-        <Text style={[styles.buttonText, small && { fontSize: 15 }, { color: palette.fg }]}>
-          {title}
-        </Text>
+        <Text style={[styles.buttonText, small && { fontSize: 15 }, { color: palette.fg }]}>{title}</Text>
       )}
     </Pressable>
   );

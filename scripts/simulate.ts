@@ -10,6 +10,7 @@ import { TcpClientTransport } from '../src/net/transport';
 import { ipToRoomCode, roomCodeToIp } from '../src/shared/roomCode';
 import { GameView, MemePack, Phase } from '../src/shared/types';
 import { BUILTIN_PACK } from '../src/data/builtinPack';
+import { parseMemegenZones } from '../src/shared/memegen';
 
 const nodeNet: NetModule = {
   createServer: (listener) => net.createServer(listener as any) as any,
@@ -47,6 +48,27 @@ async function main() {
   }
   assert.equal(ipToRoomCode('192.168.1.42')!.length, 4);
   console.log('✓ codes de salle', ipToRoomCode('192.168.1.42'), ipToRoomCode('172.20.10.1'));
+
+  // --- parseur des zones memegen
+  const yml = `name: Test
+text:
+  - style: upper
+    color: black
+    anchor_x: 0.5
+    anchor_y: 0.1
+    scale_x: 0.8
+    scale_y: 0.3
+  - anchor_y: 0.8
+example:
+  - a
+`;
+  const round = (zs: ReturnType<typeof parseMemegenZones>) => zs.map((z) => ({ ...z, w: +z.w.toFixed(3), h: +z.h.toFixed(3) }));
+  assert.deepEqual(round(parseMemegenZones(yml, 2)), [
+    { x: 0.5, y: 0.1, w: 0.5, h: 0.3, style: 'plain' },
+    { x: 0, y: 0.8, w: 1, h: 0.2, style: 'outline' },
+  ]);
+  assert.deepEqual(parseMemegenZones('', 2).map((z) => z.y), [0, 0.8]);
+  console.log('✓ zones memegen');
 
   // --- pack avec image + pack intégré
   const photoPack: MemePack = {

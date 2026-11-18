@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "Little Meme",
+    "slug": "littlememe",
+    "scheme": "littlememe",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0a1a3f",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pennecstv.littlememe",
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "Little Meme utilise le réseau local pour jouer avec tes potes connectés au même Wifi."
+      }
+    },
+    "android": {
+      "package": "com.pennecstv.littlememe",
+      "adaptiveIcon": {
+        "backgroundColor": "#0a1a3f",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-font",
+      "expo-sharing",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "La caméra sert à scanner le QR code d'une partie.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Choisis des images pour créer tes propres packs de memes.",
+          "cameraPermission": false
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Little Meme enregistre tes memes favoris dans ta galerie.",
+          "savePhotosPermission": "Little Meme enregistre tes memes favoris dans ta galerie.",
+          "isAccessMediaLocationEnabled": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
